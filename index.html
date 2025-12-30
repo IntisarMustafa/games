@@ -9601,7 +9601,40 @@ async function loadLeaderboardData() {
         document.getElementById('leaderboardTableBody').innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: red;">خطأ في تحميل البيانات</td></tr>';
     }
 }
-
+// دالة لحفظ النتيجة في لوحة الصدارة
+function submitScoreToLeaderboard() {
+    // الحصول على القيم من النموذج أو من مكان تخزين النتيجة
+    const playerName = document.getElementById('playerName')?.value;
+    const playerSchool = document.getElementById('playerSchool')?.value;
+    const score = window.currentScore || window.gameScore || 0; // تأكد من وجود متغير النتيجة
+    
+    // التحقق من وجود البيانات
+    if (!playerName || !playerSchool) {
+        alert('الرجاء إدخال الاسم والمدرسة');
+        return;
+    }
+    
+    if (score === 0) {
+        alert('لا توجد نتيجة لحفظها');
+        return;
+    }
+    
+    // تعبئة النموذج المخفي
+    document.getElementById('hiddenName').value = playerName;
+    document.getElementById('hiddenSchool').value = playerSchool;
+    document.getElementById('hiddenScore').value = score;
+    
+    // إرسال النموذج
+    document.getElementById('saveForm').submit();
+    
+    // رسالة تأكيد
+    alert('تم حفظ النتيجة بنجاح!');
+    
+    // تحديث لوحة الصدارة بعد الحفظ
+    setTimeout(() => {
+        loadLeaderboardData();
+    }, 1500);
+}
 function updateLeaderboardStats(data) {
     const totalPlayers = data.length;
     const highestScore = data.length > 0 ? data[0].score : 0;
