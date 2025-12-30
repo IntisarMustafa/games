@@ -9535,8 +9535,8 @@ function restartGame() {
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
 <!-- مدخلات اللاعب -->
-<input id="playerNameInput" type="text" placeholder="اسمك">
-<input id="playerSchoolInput" type="text" placeholder="مدرستك">
+<input id="playerName" type="text" placeholder="اسمك">
+<input id="playerSchool" type="text" placeholder="مدرستك">
 <button id="submitScoreBtn" type="button">حفظ النتيجة</button>
 
 <!-- لوحة الصدارة -->
@@ -9562,8 +9562,8 @@ const SHEET_ID = "1M-LkkAoNarQDN6_Hbb5ZGhs4vuD5cfhREKpZE-48_tg";
 
 // ====== دالة الحفظ ======
 function submitScoreToLeaderboard() {
-    const nameField = document.getElementById("playerNameInput");
-    const schoolField = document.getElementById("playerSchoolInput");
+    const nameField = document.getElementById("playerName");
+    const schoolField = document.getElementById("playerSchool");
 
     const playerName = nameField ? nameField.value.trim() || "بدون اسم" : "بدون اسم";
     const playerSchool = schoolField ? schoolField.value.trim() || "غير محددة" : "غير محددة";
