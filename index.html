@@ -9608,16 +9608,7 @@ function submitScoreToLeaderboard() {
     const playerSchool = document.getElementById('playerSchool')?.value;
     const score = window.currentScore || window.gameScore || 0; // تأكد من وجود متغير النتيجة
     
-    // التحقق من وجود البيانات
-    if (!playerName || !playerSchool) {
-        alert('الرجاء إدخال الاسم والمدرسة');
-        return;
-    }
     
-    if (score === 0) {
-        alert('لا توجد نتيجة لحفظها');
-        return;
-    }
     
     // تعبئة النموذج المخفي
     document.getElementById('hiddenName').value = playerName;
