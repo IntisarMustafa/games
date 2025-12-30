@@ -9525,7 +9525,6 @@ function restartGame() {
     }, 100);
 })();
 </script>
-
 <!-- نموذج مخفي للإرسال -->
 <form id="saveForm" action="https://script.google.com/macros/s/AKfycbxz32UImiyHpRgWw31euEoV9a1un8I-bwjTWarwyaqwyaMbboLwy8kPF2eiavCgmIVbfw/exec" 
       method="POST" target="hidden_iframe" style="display:none;">
@@ -9563,9 +9562,12 @@ const SHEET_ID = "1M-LkkAoNarQDN6_Hbb5ZGhs4vuD5cfhREKpZE-48_tg";
 
 // ====== دالة الحفظ ======
 function submitScoreToLeaderboard() {
-    const playerName   = document.getElementById("playerNameInput")?.value.trim() || "بدون اسم";
-    const playerSchool = document.getElementById("playerSchoolInput")?.value.trim() || "غير محددة";
-    const playerScore  = window.finalScore || 0;
+    const nameField = document.getElementById("playerNameInput");
+    const schoolField = document.getElementById("playerSchoolInput");
+
+    const playerName = nameField ? nameField.value.trim() || "بدون اسم" : "بدون اسم";
+    const playerSchool = schoolField ? schoolField.value.trim() || "غير محددة" : "غير محددة";
+    const playerScore = window.finalScore || 0;
 
     // تعبئة الحقول المخفية
     document.getElementById("hiddenName").value   = playerName;
@@ -9586,12 +9588,6 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.replaceWith(btn.cloneNode(true)); // إزالة أي مستمعين قديمين
         const newBtn = document.getElementById("submitScoreBtn");
         newBtn.addEventListener("click", submitScoreToLeaderboard);
-    }
-
-    // زر فتح لوحة الصدارة
-    const viewLeaderboardBtn = document.getElementById('viewLeaderboardBtn');
-    if (viewLeaderboardBtn) {
-        viewLeaderboardBtn.addEventListener('click', openLeaderboard);
     }
 
     // زر إغلاق لوحة الصدارة
@@ -9691,4 +9687,5 @@ function updateLeaderboardStats(data) {
     document.getElementById('leaderboardStats').innerHTML = statsHtml;
 }
 </script>
+
 </body></html>
