@@ -9657,23 +9657,20 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script>
-window.submitScoreToLeaderboard = function () {
+function submitScoreToLeaderboard() {
 
-    // ⚠️ عدّلي هذه القيم حسب لعبتك
-    const playerName = window.playerName || "بدون اسم";
-    const playerSchool = window.playerSchool || "غير محددة";
-    const playerScore = window.finalScore || 0;
+    // غيّري هذه القيم حسب لعبتك
+    const playerName   = document.getElementById("playerNameInput")?.value || "بدون اسم";
+    const playerSchool = document.getElementById("playerSchoolInput")?.value || "غير محددة";
+    const playerScore  = window.finalScore || 0;
 
-    // تعبئة الحقول المخفية
-    document.getElementById("hiddenName").value = playerName;
+    document.getElementById("hiddenName").value   = playerName;
     document.getElementById("hiddenSchool").value = playerSchool;
-    document.getElementById("hiddenScore").value = playerScore;
+    document.getElementById("hiddenScore").value  = playerScore;
 
-    // إرسال النموذج
     document.getElementById("saveForm").submit();
 
-    console.log("تم إرسال النتيجة:", playerName, playerSchool, playerScore);
-};
+    console.log("تم الإرسال بنجاح");
+}
 </script>
-
 </body></html>
