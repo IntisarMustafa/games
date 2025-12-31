@@ -9597,16 +9597,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// ====== فتح/إغلاق لوحة الصدارة ======
-function openLeaderboard() {
-    const modal = document.getElementById('leaderboardModal');
-    if (modal) {
-        modal.classList.add('active');
-        loadLeaderboardData();
-        const gameOverPanel = document.getElementById("gameOverPanel");
-        if (gameOverPanel) gameOverPanel.style.display = "none";
-    }
-}
+
 
 function closeLeaderboard() {
     const modal = document.getElementById('leaderboardModal');
