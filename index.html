@@ -5534,21 +5534,7 @@ playerSurfaceY: hillHeight + 2.0,
     }
 }
 
-            function handleSuccess() {
-                btn.textContent = "تم الحفظ ✅";
-                btn.style.background = "#2e7d32";
-                
-                const successDiv = document.createElement("div");
-                successDiv.style = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#4CAF50;color:white;padding:15px 30px;border-radius:10px;z-index:10000;font-size:18px;box-shadow:0 5px 20px rgba(0,0,0,0.3);border:2px solid white;";
-                successDiv.textContent = "✅ تم حفظ النتيجة بنجاح!";
-                document.body.appendChild(successDiv);
-                
-                setTimeout(() => successDiv.remove(), 3000);
-                setTimeout(() => {
-                    if (typeof openLeaderboard === 'function') openLeaderboard();
-                }, 1000);
-            }
-        };
+            
 
         function showSuccessMessage(msg) {
             const div = document.createElement("div");
