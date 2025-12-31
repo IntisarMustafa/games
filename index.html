@@ -5510,53 +5510,30 @@ playerSurfaceY: hillHeight + 2.0,
                 });
         }
 
-        window.submitScoreToLeaderboard = function() {
-            console.log("🚀 بدء حفظ النتيجة...");
-            const nameInput = document.getElementById("playerName");
-            const schoolInput = document.getElementById("playerSchool");
-            const btn = document.getElementById("submitScoreBtn");
-            
-            if (!nameInput || !schoolInput || !btn) return;
-            
-            const name = nameInput.value.trim();
-            const school = schoolInput.value.trim();
-            
-            if (!name || !school) {
-                alert("⚠️ الرجاء إدخال الاسم والمدرسة");
-                return;
-            }
-            
-            const score = window.gameScore || window.score || 0;
-            
-            btn.disabled = true;
-            btn.textContent = "جاري الحفظ... ⏳";
-            
-            // استخدام النموذج المخفي للإرسال عبر POST - الطريقة الأكثر ضماناً
-            try {
-                const saveForm = document.getElementById('saveForm');
-                const hiddenName = document.getElementById('hiddenName');
-                const hiddenSchool = document.getElementById('hiddenSchool');
-                const hiddenScore = document.getElementById('hiddenScore');
-                
-                if (saveForm && hiddenName && hiddenSchool && hiddenScore) {
-                    hiddenName.value = name;
-                    hiddenSchool.value = school;
-                    hiddenScore.value = score;
-                    
-                    saveForm.submit();
-                    console.log("✅ تم إرسال النموذج بنجاح");
-                    setTimeout(handleSuccess, 1500);
-                } else {
-                    throw new Error("Form elements not found");
-                }
-            } catch (error) {
-                console.error("❌ فشل إرسال النموذج، المحاولة عبر fetch:", error);
-                // محاولة بديلة في حال فشل النموذج
-                const baseUrl = "https://script.google.com/macros/s/AKfycbztibzrh3GnP9gjabnfyvok8HX2IYiJigFUwcLpLKA8aQWnJqFxKFOSM9XRzf6T0V2OPg/exec";
-                const url = `${baseUrl}?name=${encodeURIComponent(name)}&school=${encodeURIComponent(school)}&score=${score}`;
-                fetch(url, { method: 'GET', mode: 'no-cors' }).finally(() => handleSuccess());
-            }
-            
+        async function submitScoreToLeaderboard(name, school, score) {
+    try {
+        // 1. تحديث قيم الحقول المخفية في النموذج
+        document.getElementById('hiddenName').value = name;
+        document.getElementById('hiddenSchool').value = school;
+        document.getElementById('hiddenScore').value = score;
+
+        // 2. إرسال النموذج (سيتم الإرسال عبر الـ iframe المخفي)
+        document.getElementById('saveForm').submit();
+
+        // 3. عرض رسالة نجاح للمستخدم
+        alert("✅ تم إرسال نتيجتك بنجاح إلى لوحة المتصدرين!");
+        
+        // تحديث لوحة المتصدرين بعد الإرسال بـ 3 ثواني لضمان وصول البيانات
+        setTimeout(fetchLeaderboard, 3000);
+        
+        return true;
+    } catch (error) {
+        console.error("خطأ في الإرسال:", error);
+        alert("❌ حدث خطأ أثناء محاولة حفظ النتيجة.");
+        return false;
+    }
+}
+
             function handleSuccess() {
                 btn.textContent = "تم الحفظ ✅";
                 btn.style.background = "#2e7d32";
