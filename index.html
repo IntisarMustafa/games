@@ -5510,7 +5510,7 @@ playerSurfaceY: hillHeight + 2.0,
                 });
         }
 
-        async function submitScoreToLeaderboard(name, school, score) {
+     function submitScoreToLeaderboard(name, school, score) {
     try {
         // 1. تحديث قيم الحقول المخفية في النموذج
         document.getElementById('hiddenName').value = name;
@@ -5544,19 +5544,7 @@ playerSurfaceY: hillHeight + 2.0,
             setTimeout(() => div.remove(), 3000);
         }
 
-        function initializeSubmitButton() {
-            const btn = document.getElementById("submitScoreBtn");
-            if (btn) {
-                btn.onclick = null;
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log("✅ Submit button clicked!");
-                    window.submitScoreToLeaderboard();
-                });
-                console.log("✅ Submit button initialized");
-            }
-        }
+        
 
         window.showGameOver = function() {
             gameOver = true;
