@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الصدارة - الراعي الذكي والخراف الضائعة</title>
+    <style>
+        /* التنسيقات العامة والأساسية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        /* تأثيرات العنوان */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            animation: slideDown 0.6s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header h1 {
+            font-size: clamp(24px, 8vw, 40px);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: clamp(14px, 4vw, 18px);
+        }
+        
+        /* حاوية لوحة الصدارة */
+        .leaderboard-wrapper {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.6s ease-out;
+            width: 100%;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 450px;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px 10px;
+            text-align: right;
+            font-size: clamp(14px, 3vw, 16px);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            font-size: clamp(13px, 3vw, 16px);
+            vertical-align: middle;
+        }
+        
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        tbody tr:hover {
+            background: #f5f5f5;
+        }
+        
+        /* تمييز المراكز الثلاثة الأولى بخلفيات هادئة */
+        tbody tr.rank-1 { background: rgba(255, 215, 0, 0.1); }
+        tbody tr.rank-2 { background: rgba(192, 192, 192, 0.1); }
+        tbody tr.rank-3 { background: rgba(205, 127, 50, 0.1); }
+        
+        .rank-cell {
+            font-weight: bold;
+            color: #667eea;
+            width: 80px;
+            text-align: center;
+        }
+
+        /* إضافة الميداليات بجانب الرقم وليس بدلاً منه */
+        .rank-1 .rank-cell::after { content: " 🥇"; font-size: 1.2em; }
+        .rank-2 .rank-cell::after { content: " 🥈"; font-size: 1.2em; }
+        .rank-3 .rank-cell::after { content: " 🥉"; font-size: 1.2em; }
+        
+        .name { font-weight: 600; color: #333; }
+        .school { color: #666; font-style: italic; font-size: 0.9em; }
+        .score { font-weight: bold; color: #667eea; text-align: center; }
+        
+        /* واجهة التحميل والخطأ */
+        .loading { text-align: center; padding: 40px; color: #667eea; font-size: 18px; }
+        .error { text-align: center; padding: 20px; color: #d32f2f; background: #ffebee; border-radius: 10px; margin: 10px; font-size: 14px; }
+        
+        /* الأزرار والتذييل */
+        .controls { 
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px; 
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            flex: 1;
+            max-width: 200px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .refresh-btn { background: white; color: #667eea; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; }
+        
+        .btn:active { transform: scale(0.95); }
+        
+        .footer { text-align: center; color: white; margin-top: 20px; font-size: 12px; opacity: 0.8; }
+
+        /* تعديلات الموبايل لضمان عدم اختفاء أي عمود */
+        @media (max-width: 480px) {
+            body { padding: 5px; }
+            th, td { padding: 10px 5px; }
+            .rank-cell { width: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 لوحة الصدارة</h1>
+            <p>أفضل الطلاب في لعبة الراعي الذكي</p>
+        </div>
+        
+        <div class="leaderboard-wrapper">
+            <div id="loading" class="loading">جاري التحميل... ⏳</div>
+            
+            <div class="table-responsive">
+                <table id="leaderboard" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">#</th>
+                            <th>الطالب</th>
+                            <th>المدرسة</th>
+                            <th style="text-align: center;">النقاط</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn refresh-btn" onclick="loadLeaderboard()">🔄 تحديث</button>
+            <a href="index.html" class="btn back-btn">⬅ العودة</a>
+        </div>
+        
+        <div class="footer">
+            <p>تحديث تلقائي كل 10 ثوانٍ</p>
+            <p>آخر تحديث: <span id="last-update">-</span></p>
+        </div>
+    </div>
+    
+    <script>
+        const SHEET_ID = "1M-LkkAoNarQDN6_Hbb5ZGhs4vuD5cfhREKpZE-48_tg";
+        
+        async function loadLeaderboard() {
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const table = document.getElementById('leaderboard');
+            const tbody = document.getElementById('leaderboard-body');
+            
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                const rows = json.table.rows;
+                
+                if (!rows || rows.length === 0) {
+                    error.textContent = 'لا توجد نتائج مسجلة.';
+                    error.style.display = 'block';
+                    loading.style.display = 'none';
+                    return;
+                }
+                
+                // الفرز حسب عمود النقاط (الفهرس 2 بناءً على ترتيبك: Name, School, Score, Timestamp)
+                rows.sort((a, b) => {
+                    const sA = (a.c[2] && a.c[2].v) ? a.c[2].v : 0;
+                    const sB = (b.c[2] && b.c[2].v) ? b.c[2].v : 0;
+                    return sB - sA;
+                });
+                
+                tbody.innerHTML = '';
+                rows.slice(0, 20).forEach((row, index) => {
+                    const name = (row.c[0] && row.c[0].v) ? row.c[0].v : '---';
+                    const school = (row.c[1] && row.c[1].v) ? row.c[1].v : '---';
+                    const score = (row.c[2] && row.c[2].v) ? row.c[2].v : 0;
+                    
+                    const tr = document.createElement('tr');
+                    
+                    // إضافة كلاس المركز للثلاثة الأوائل للتحكم في الخلفية والميدالية
+                    if (index === 0) tr.className = 'rank-1';
+                    else if (index === 1) tr.className = 'rank-2';
+                    else if (index === 2) tr.className = 'rank-3';
+                    
+                    tr.innerHTML = `
+                        <td class="rank-cell">${index + 1}</td>
+                        <td class="name">${name}</td>
+                        <td class="school">${school}</td>
+                        <td class="score">${score}</td>
+                    `;
+                    
+                    tbody.appendChild(tr);
+                });
+                
+                document.getElementById('last-update').textContent = new Date().toLocaleTimeString('ar-SA');
+                loading.style.display = 'none';
+                table.style.display = 'table';
+                error.style.display = 'none';
+                
+            } catch (err) {
+                loading.style.display = 'none';
+                error.textContent = 'حدث خطأ في تحديث البيانات.';
+                error.style.display = 'block';
+            }
+        }
+        
+        loadLeaderboard();
+        setInterval(loadLeaderboard, 10000);
+    </script>
+</body>
+</html>
+
